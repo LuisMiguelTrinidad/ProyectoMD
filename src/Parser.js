@@ -22,10 +22,10 @@ async function Parsea(rutaArchivoEntrada, rutaArchivoSalida) {
 }
 
 // Especificar la ruta de tu archivo de entrada
-const rutaArchivoEntrada = "gamestate3.txt";
+const rutaArchivoEntrada = "./data/gamestate0";
 
 // Especificar la ruta para el archivo JSON de salida
-const rutaArchivoSalida = "output.json";
+const rutaArchivoSalida = "./output/output0.json";
 
 // Llamar a la función con las rutas de los archivos
 Parsea(rutaArchivoEntrada, rutaArchivoSalida);
