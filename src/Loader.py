@@ -10,7 +10,6 @@ def lectura(ruta_archivo):
         objetos_galacticos = datos_json.get("galactic_object", {})
 
         if objetos_galacticos:
-            
             map = {}
 
             # Iterar a través de todas las entradas de "galactic_object"
@@ -20,7 +19,7 @@ def lectura(ruta_archivo):
                 clave_nombre = objeto_galactico["name"]["key"]
                 hyperlane = objeto_galactico.get("hyperlane",[])
 
-
+                # Guardamos la información necesaria en un diccionario
                 map[id_objeto]=[coordenada["x"],  coordenada["y"], clave_nombre, hyperlane]
             
             for i in map:

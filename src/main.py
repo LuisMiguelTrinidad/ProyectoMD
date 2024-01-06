@@ -14,8 +14,7 @@ def ejecutar_script_javascript(ruta_archivo_entrada, ruta_archivo_salida):
         
     except subprocess.CalledProcessError as e:
         # Imprime el error estándar en caso de un error
-        print("Error al ejecutar el código JavaScript:", e)
-        print("Salida de error:")
+        print("Error al ejecutar el código JavaScript:")
         print(e.stderr)
 
 # Especifica la ruta a tu archivo de entrada

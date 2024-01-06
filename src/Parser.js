@@ -15,7 +15,7 @@ async function Parsea(rutaArchivoEntrada, rutaArchivoSalida) {
     // Escribir los datos analizados en el archivo JSON de salida
     await fs.promises.writeFile(rutaArchivoSalida, JSON.stringify(resultado, null, 2), "utf-8");
 
-    console.log("Análisis exitoso. Resultados escritos en:", rutaArchivoSalida);
+    console.log("Análisis exitoso, resultado generado en:", rutaArchivoSalida);
   } catch (error) {
     console.error("Error al leer, analizar o escribir en el archivo:", error);
   }
