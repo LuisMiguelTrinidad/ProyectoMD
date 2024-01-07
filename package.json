@@ -1,0 +1,22 @@
+{
+  "name": "proyectomd",
+  "version": "1.0.0",
+  "description": "\"Descripcion temporal\"",
+  "main": "main.py",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LuisMiguelTrinidad/ProyectoMD.git"
+  },
+  "keywords": [
+    "Graphs"
+  ],
+  "author": "temp",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/LuisMiguelTrinidad/ProyectoMD/issues"
+  },
+  "homepage": "https://github.com/LuisMiguelTrinidad/ProyectoMD#readme"
+}

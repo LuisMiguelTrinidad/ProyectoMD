@@ -1,4 +1,5 @@
 import subprocess
+import Loader
 
 def ejecutar_script_javascript(ruta_archivo_entrada, ruta_archivo_salida):
     try:
@@ -17,11 +18,10 @@ def ejecutar_script_javascript(ruta_archivo_entrada, ruta_archivo_salida):
         print("Error al ejecutar el código JavaScript:")
         print(e.stderr)
 
-# Especifica la ruta a tu archivo de entrada
-ruta_archivo_entrada = "./data/gamestate0"
+def main():
+    ejecutar_script_javascript("./data/gamestate0", "./output/output0.json")
+    diccionario_completo=Loader.lectura("./output/output0.json")
+    Loader.test_lectura("./output/output0.json")
 
-# Especifica la ruta para el archivo JSON de salida
-ruta_archivo_salida = "./output/output0.json"
-
-# Llama a la función para ejecutar el código JavaScript
-ejecutar_script_javascript(ruta_archivo_entrada, ruta_archivo_salida)
+if __name__ == "__main__":
+    main()

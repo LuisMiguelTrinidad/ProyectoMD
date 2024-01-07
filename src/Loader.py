@@ -1,6 +1,6 @@
 import json
 
-def lectura(ruta_archivo):
+def lectura(ruta_archivo: str):
     try:
         # Leer el contenido del archivo JSON
         with open(ruta_archivo, 'r', encoding='utf-8') as archivo:
@@ -16,17 +16,26 @@ def lectura(ruta_archivo):
             for id_objeto, objeto_galactico in objetos_galacticos.items():
                 # Acceder e imprimir o utilizar propiedades específicas de cada "galactic_object"
                 coordenada = objeto_galactico["coordinate"]
-                clave_nombre = objeto_galactico["name"]["key"]
+                nombre = objeto_galactico["name"]["key"]
                 hyperlane = objeto_galactico.get("hyperlane",[])
 
-                # Guardamos la información necesaria en un diccionario
-                map[id_objeto]=[coordenada["x"],  coordenada["y"], clave_nombre, hyperlane]
-            
-            for i in map:
-                print(i, ":", map[i])
+                # Verificar si la longitud de hyperlane es mayor que 0, para eliminar vértices anormales
+                if len(hyperlane) > 0:
+                    # Guardar la información necesaria en el diccionario
+                    map[int(id_objeto)] = [nombre, [(i["to"], i["length"]) for i in hyperlane], (coordenada["x"], coordenada["y"])]
+            return map
         else:
-            print("La clave 'galactic_object' no existe en los datos JSON.")
+            raise ValueError("La clave 'galactic_object' no existe en los datos JSON.") 
+    
     except Exception as e:
         print(f"Error al leer o analizar el archivo JSON: {e}")
-    
-lectura("./output/output0.json")
+
+def test_lectura(diccionario: dict[int, list[tuple[int,float]],tuple[float,float]]) -> None:
+    # Imprimir los 3 primeros elementos
+    for r in list(diccionario.items())[:3]:
+        print(r[0], ": ", r[1])
+    # Imprimir puntos suspensivos
+    print("...")
+    # Imprimir los 3 últimos elementos
+    for r in list(diccionario.items())[-3:]:
+        print(r[0], ": ", r[1])
