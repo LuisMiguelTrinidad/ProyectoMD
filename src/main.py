@@ -1,5 +1,5 @@
 import subprocess
-import Loader
+import Reader
 
 def ejecutar_script_javascript(ruta_archivo_entrada, ruta_archivo_salida):
     try:
@@ -20,8 +20,8 @@ def ejecutar_script_javascript(ruta_archivo_entrada, ruta_archivo_salida):
 
 def main():
     ejecutar_script_javascript("./data/gamestate0", "./output/output0.json")
-    diccionario_completo=Loader.lectura("./output/output0.json")
-    Loader.test_lectura("./output/output0.json")
+    diccionario_completo=Reader.lectura("./output/output0.json")
+    Reader.test_lectura("./output/output0.json")
 
 if __name__ == "__main__":
     main()
