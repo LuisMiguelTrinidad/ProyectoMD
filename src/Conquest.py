@@ -1,56 +1,82 @@
 #Hay que hacer dijkstra y despues tsp sobre el subgrafo resultante
 import networkx as nx
-from itertools import permutations
 from matplotlib import pyplot as plt;
 
-def steiner_path(graph, terminals):
-    min_cost = float('inf')
-    min_path = None
+def subgrafo(grafo: nx.Graph, sistplan: set[int]):
+    listarecorridos = []
+    aristas = []
 
-    for permuted_terminals in permutations(terminals):
-        path_cost = 0
-        current_path = []
+    for i in sistplan:
+        distancias, caminos  = nx.single_source_dijkstra(G, source=i)
 
-        for i in range(len(permuted_terminals) - 1):
-            source, target = permuted_terminals[i], permuted_terminals[i + 1]
-            # Find the shortest path between consecutive terminals
-            shortest_path = nx.shortest_path(graph, source=source, target=target, weight='weight')
-            current_path.extend(shortest_path[:-1])  # Avoid duplicating common nodes
-            path_cost += nx.shortest_path_length(graph, source=source, target=target, weight='weight')
+        for r in caminos:
+            origen = caminos[r][0] #El elemento 0 de la lista de vertices recorridos
+            destino = r
+            distancia = distancias[r]
+            if(origen!=destino and destino in sistplan):
+                a = True
+                for destinatario in sistplan:
+                    if destinatario!=origen and destinatario!=destino and destinatario in caminos[r]:
+                        a = False
+                if(a):        
+                    aristas.append((origen, destino, distancia))
+                    listarecorridos.append((origen, destino, caminos[r]))
+    grafores = nx.Graph()
+    grafores.add_weighted_edges_from(aristas)
 
-        if path_cost < min_cost:
-            min_cost = path_cost
-            min_path = current_path + [terminals[-1]]
+    print(aristas)
+    print(listarecorridos)
 
-    return min_path, min_cost
-
-def plot_graph_with_path(graph, path):
-    pos = nx.spring_layout(graph)
-    nx.draw(graph, pos, with_labels=True, font_weight='bold', node_size=700, node_color='lightblue')
-    
-    edges = [(path[i], path[i+1]) for i in range(len(path)-1)]
-    edge_labels = {(path[i], path[i+1]): graph[path[i]][path[i+1]]['weight'] for i in range(len(path)-1)}
-
-    nx.draw_networkx_nodes(graph, pos, nodelist=path, node_color='red', node_size=700)
-    nx.draw_networkx_edges(graph, pos, edgelist=edges, edge_color='red', width=2)
-    nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels)
-
+    pos = nx.circular_layout(grafores)  # Layout para posicionar los nodos
+    nx.draw(grafores, pos, with_labels=True, node_size=700, node_color="skyblue", font_size=10, font_color="black", font_weight="bold")
+    labels = nx.get_edge_attributes(grafores, 'weight')
+    nx.draw_networkx_edge_labels(grafores, pos, edge_labels=labels)
     plt.show()
 
-# Example usage:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Crear un grafo dirigido
 G = nx.Graph()
-G.add_weighted_edges_from([(1, 2, 4), (1, 3, 2), (1, 4, 7),
-                           (2, 3, 5), (2, 5, 8),
-                           (3, 4, 1), (3, 5, 3),
-                           (4, 6, 6),
-                           (5, 6, 9),
-                           (6,7,2), (6,2,6),
-                           (7,1,2), (7,2,6)])
 
-terminals = [7, 3, 5]
-optimal_path, total_cost = steiner_path(G, terminals)
+# Agregar nodos al grafo
+G.add_nodes_from(["A", "B", "C", "D", "E", "F", "G", "H"])
 
-print("Optimal Path:", optimal_path)
-print("Total Cost:", total_cost)
+# Agregar aristas con pesos al grafo
+G.add_edge("A", "B", weight=4)
+G.add_edge("A", "C", weight=2)
+G.add_edge("B", "C", weight=5)
+G.add_edge("B", "D", weight=10)
+G.add_edge("C", "D", weight=3)
+G.add_edge("D", "E", weight=7)
+G.add_edge("E", "F", weight=6)
+G.add_edge("F", "G", weight=8)
+G.add_edge("G", "H", weight=9)
+G.add_edge("H", "A", weight=1)
 
-plot_graph_with_path(G, optimal_path)
+# Puedes agregar más nodos y aristas según tus necesidades
+
+# Definir el conjunto de destinos
+destinos = {"C", "D", "E", "H", "G"}
+
+pos = nx.spring_layout(G)  # Layout para posicionar los nodos
+nx.draw(G, pos, with_labels=True, node_size=700, node_color="skyblue", font_size=10, font_color="black", font_weight="bold")
+labels = nx.get_edge_attributes(G, 'weight')
+nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
+plt.show()
+
+subgrafo(G, destinos)
