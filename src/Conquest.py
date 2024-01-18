@@ -1,7 +1,6 @@
 #Hay que hacer dijkstra y despues tsp sobre el subgrafo resultante
 import networkx as nx
 from matplotlib import pyplot as plt;
-from scipy import optimize;
 
 def subgrafo(grafo: nx.Graph, sistplan: set[int]):
     
@@ -28,8 +27,6 @@ def subgrafo(grafo: nx.Graph, sistplan: set[int]):
                       
                     aristas.append((origen, destino, distancia))
                     listarecorridos.append((origen, destino, caminos[r]))
-                    print("Imprimiento listarecorridos ")
-                    print(listarecorridos)      
         dictarista_recorrido[origen] = [tuple(k for k in r[2]) for r in listarecorridos]
 
     grafores = nx.Graph()
@@ -38,18 +35,25 @@ def subgrafo(grafo: nx.Graph, sistplan: set[int]):
 
 def remapea(grafo: nx.Graph):
     aristas = []
+    dictarista_recorrido = dict()
     for i in grafo.nodes():
         #Distancia desde todos los puntos hasta nuestro punto i
         distancias, caminos  = nx.single_source_dijkstra(grafo, source=i)
+        listarecorridos = []
         for r in caminos:
             origen = caminos[r][0] 
             destino = r
             distancia = distancias[r]
             if(origen!=destino):
                 aristas.append((origen, destino, distancia))
+                listarecorridos.append((origen, destino, caminos[r]))
+
+        dictarista_recorrido[origen] = [tuple(k for k in r[2]) for r in listarecorridos]
     grafores = nx.Graph()
     grafores.add_weighted_edges_from(aristas)
-    return grafores
+    print("HHHooolllaaa")
+    print(nx.to_dict_of_lists(grafores))
+    return grafores, dictarista_recorrido
     
 
 def recorrido_minimo(grafo: nx.Graph, dicc: dict[str, list[tuple[str]]]):
@@ -67,9 +71,11 @@ def asocia(lista: list,dicc: dict[str, list[tuple[str]]]):
     for i in range(len(lista)-1):
         for j in range(len(dicc.get(lista[i]))):
             if lista[i+1]==dicc.get(lista[i])[j][-1]:
-                recorrido.extend(dicc.get(lista[i])[j][:-1])
+                recorrido.extend(dicc.get(lista[i])[j])
+    for i in range(len(recorrido)-1, 0, -1):
+        if recorrido[i] == recorrido[i-1]:
+            del recorrido[i]
 
-    print(recorrido)
     return recorrido
         
 
@@ -124,18 +130,22 @@ def main():
     G2, diccrecorr = subgrafo(G, destinos)
 
     #Test 2
-    G3 = remapea(G2)
+    G3, diccrecorr2 = remapea(G2)
     print("test2")
     print(nx.to_dict_of_lists(G3))
 
 
     #Test 3
+    print("Test 3")
     recorrido = recorrido_minimo(G3, diccrecorr)
     print(recorrido)
 
     #Test 4
     #Tengo que corregir para el caso de que haya aristas raras tras remapear
-    print(asocia(recorrido, diccrecorr))
+    print("Test 4")
+    abc = asocia(recorrido, diccrecorr2)
+    print(abc)
+    print(asocia(abc, diccrecorr))
 
 
     #Grafo original
