@@ -45,12 +45,11 @@ def remapea(grafo: nx.Graph):
             destino = r
             distancia = distancias[r]
             if(origen!=destino):
-                a = True
-                for destinatario in grafo.nodes():
-                    if destinatario!=origen and destinatario!=destino and destinatario in caminos[r]:
-                        a = False
-                if(a):
-                    aristas.append((origen, destino, distancia))
+                aristas.append((origen, destino, distancia))
+    grafores = nx.Graph()
+    grafores.add_weighted_edges_from(aristas)
+    return grafores
+    
 
 def recorrido_minimo(grafo: nx.Graph, dicc: dict[str, list[tuple[str]]]):
     grafoaux = grafo.to_directed()
@@ -129,26 +128,39 @@ def main():
     #Test 1
     G2, diccrecorr = subgrafo(G, destinos)
 
+    #Test 2
+    G3 = remapea(G2)
+    print("test3")
+    print(nx.to_dict_of_lists(G3))
+
+
     #Test 3
     #recorrido = recorrido_minimo(G2, diccrecorr)
 
-    pos = nx.spring_layout(G)  # Layout para posicionar los nodos
-    nx.draw(G, pos, with_labels=True, node_size=700, node_color="skyblue", font_size=10, font_color="black", font_weight="bold")
-    labels = nx.get_edge_attributes(G, 'weight')
-    nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
-    plt.show()
 
+    #Grafo original
+    
     # Visualizar G, coloreando los nodos que también aparecen en G2 de manera diferente
+    pos = nx.spring_layout(G)  # Layout para posicionar los nodos
     node_colors_G = ["yellow" if nodo in G2.nodes else "skyblue" for nodo in G.nodes]
     nx.draw(G, pos, with_labels=True, node_size=700, node_color=node_colors_G, font_size=10, font_color="black", font_weight="bold")
     labels_G = nx.get_edge_attributes(G, 'weight')
     nx.draw_networkx_edge_labels(G, pos, edge_labels=labels_G)
     plt.show()
 
+
+    #Grafo reducido 
+
     pos2 = {r: pos[r] for r in pos if r in G2.nodes()}
     nx.draw(G2, pos2, with_labels=True, node_size=700)
     labels_G2 = nx.get_edge_attributes(G2, 'weight')
     nx.draw_networkx_edge_labels(G2, pos2, edge_labels=labels_G2)
+    plt.show()
+
+    #Grafo reducido reorganizado
+    nx.draw(G3, pos2, with_labels=True, node_size=700)
+    labels_G3 = nx.get_edge_attributes(G3, 'weight')
+    nx.draw_networkx_edge_labels(G3, pos2, edge_labels=labels_G3)
     plt.show()
 
 
