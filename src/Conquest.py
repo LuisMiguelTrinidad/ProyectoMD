@@ -1,6 +1,7 @@
 #Hay que hacer dijkstra y despues tsp sobre el subgrafo resultante
 import networkx as nx
 from matplotlib import pyplot as plt;
+from scipy import optimize;
 
 def subgrafo(grafo: nx.Graph, sistplan: set[int]):
     
@@ -53,9 +54,7 @@ def remapea(grafo: nx.Graph):
 
 def recorrido_minimo(grafo: nx.Graph, dicc: dict[str, list[tuple[str]]]):
     grafoaux = grafo.to_directed()
-    nx.approximation.asadpour_atsp()
-    a = nx.tournament.hamiltonian_path(grafoaux)
-    return a
+    return nx.approximation.traveling_salesman_problem(grafoaux, cycle=False)
 
 #def arbol_minimo(grafo: nx.Graph, dicc: dict[list[str, tuple[str, str, list[str]]]]):
 #    grafoaux = grafo.to_directed()
@@ -72,11 +71,7 @@ def asocia(lista: list,dicc: dict[str, list[tuple[str]]]):
 
     print(recorrido)
     return recorrido
-
-#Formato_lista("D","C","H","G")
-#Formato_dicc {'D': [('D', 'C'), ('D', 'E')], 'R': [('R', 'A', 'C'), ('R', 'A', 'H', 'P', 'O', 'N')],...}
         
-
 
 def main():
 
@@ -123,19 +118,24 @@ def main():
 
     G = creagrafo()
     # Definir el conjunto de destinos
-    destinos = {"C", "D", "E", "N", "R"}
+    destinos = {"C", "D", "E", "N", "R", "P"}
 
     #Test 1
     G2, diccrecorr = subgrafo(G, destinos)
 
     #Test 2
     G3 = remapea(G2)
-    print("test3")
+    print("test2")
     print(nx.to_dict_of_lists(G3))
 
 
     #Test 3
-    #recorrido = recorrido_minimo(G2, diccrecorr)
+    recorrido = recorrido_minimo(G3, diccrecorr)
+    print(recorrido)
+
+    #Test 4
+    #Tengo que corregir para el caso de que haya aristas raras tras remapear
+    print(asocia(recorrido, diccrecorr))
 
 
     #Grafo original
