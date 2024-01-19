@@ -147,6 +147,12 @@ def main():
     print(abc)
     print(asocia(abc, diccrecorr))
 
+    #Test5 steiner tree (por hacer)
+    print("Test 5")
+    print(nx.to_dict_of_lists(nx.approximation.steiner_tree(G, destinos)))
+    b = nx.minimum_spanning_tree(G3)
+
+
 
     #Grafo original
     
