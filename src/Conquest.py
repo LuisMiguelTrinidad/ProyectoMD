@@ -55,8 +55,7 @@ def remapea(grafo: nx.Graph):
     
 
 def recorrido_minimo(grafo: nx.Graph, dicc: dict[str, list[tuple[str]]]):
-    grafoaux = grafo.to_directed()
-    return nx.approximation.traveling_salesman_problem(grafoaux, cycle=False)
+    return nx.approximation.traveling_salesman_problem(grafo, cycle=False)
 
 def asocia(lista: list,dicc: dict[str, list[tuple[str]]]):
 
@@ -117,29 +116,29 @@ def main():
 
     G = creagrafo()
     # Definir el conjunto de destinos
-    destinos = {"C", "D", "E", "N", "R", "P"}
+    nodos_terminales = {"C", "D", "E", "N", "R", "P", "O", "K"}
 
     #Test 1
     print("Test 1")
-    G2, diccrecorr = subgrafo(G, destinos)
+    G2, dict_recorridos = subgrafo(G, nodos_terminales)
     print(nx.to_dict_of_lists(G2))
 
     #Test 2
-    G3, diccrecorr2 = remapea(G2)
     print("Test 2")
+    G3, dict_recorridos2 = remapea(G2)
     print(nx.to_dict_of_lists(G3))
 
 
     #Test 3
     print("Test 3")
-    recorrido = recorrido_minimo(G3, diccrecorr)
+    recorrido = recorrido_minimo(G3, dict_recorridos)
     print(recorrido)
 
     #Test 4
     print("Test 4")
-    abc = asocia(recorrido, diccrecorr2)
-    resultado = asocia(abc, diccrecorr)
-    print(resultado)
+    resultado1de2 = asocia(recorrido, dict_recorridos2)
+    resultado2de2 = asocia(resultado1de2, dict_recorridos)
+    print(resultado2de2)
 
 
 
@@ -147,33 +146,33 @@ def main():
     # Visualizar G, coloreando los nodos que también aparecen en G2 de manera diferente
     nodo_pos = nx.spring_layout(G)  # Layout para posicionar los nodos
     nodo_colores = ["yellow" if nodo in G2.nodes else "skyblue" for nodo in G.nodes]
-    nx.draw(G, pos=nodo_pos, with_labels=True, node_size=700, node_color=nodo_colores, font_size=10, font_color="black", font_weight="bold")
-    labels_G = nx.get_edge_attributes(G, 'weight')
-    nx.draw_networkx_edge_labels(G, pos=nodo_pos, edge_labels=labels_G)
+    nx.draw(G, pos=nodo_pos, with_labels=True, node_size=700, node_color=nodo_colores)
+    arista_etiquetas = nx.get_edge_attributes(G, 'weight')
+    nx.draw_networkx_edge_labels(G, pos=nodo_pos, edge_labels=arista_etiquetas)
     plt.show()
 
 
     #Grafo reducido 
     nx.draw(G2, pos=nodo_pos, with_labels=True, node_size=700)
-    labels_G2 = nx.get_edge_attributes(G2, 'weight')
-    nx.draw_networkx_edge_labels(G2, pos=nodo_pos, edge_labels=labels_G2)
+    arista_etiquetas = nx.get_edge_attributes(G2, 'weight')
+    nx.draw_networkx_edge_labels(G2, pos=nodo_pos, edge_labels=arista_etiquetas)
     plt.show()
 
     #Grafo reducido reorganizado
     nx.draw(G3, pos=nodo_pos, with_labels=True, node_size=700)
-    labels_G3 = nx.get_edge_attributes(G3, 'weight')
-    nx.draw_networkx_edge_labels(G3, pos=nodo_pos, edge_labels=labels_G3)
+    arista_etiquetas = nx.get_edge_attributes(G3, 'weight')
+    nx.draw_networkx_edge_labels(G3, pos=nodo_pos, edge_labels=arista_etiquetas)
     plt.show()
 
     #Camino sobre el grafo reducido
-    arista_color = {edge: {'color': 'red'} for _, edge in enumerate(zip(abc, abc[1:]))}
-    nx.draw(G3, pos=nodo_pos, with_labels=True, font_weight='bold', node_size=700, node_color='skyblue')
+    arista_color = {edge: {'color': 'red'} for _, edge in enumerate(zip(resultado1de2, resultado1de2[1:]))}
+    nx.draw(G3, pos=nodo_pos, with_labels=True, node_size=700, node_color='skyblue')
     nx.draw_networkx_edges(G3, pos=nodo_pos, edgelist=arista_color.keys(), edge_color='red', width=5)
     plt.show()
     
     #Camino sobre el grafo original
-    arista_color = {edge: {'color': 'red'} for _, edge in enumerate(zip(resultado, resultado[1:]))}
-    nx.draw(G, pos=nodo_pos, with_labels=True, font_weight='bold', node_size=700, node_color='skyblue')
+    arista_color = {edge: {'color': 'red'} for _, edge in enumerate(zip(resultado2de2, resultado2de2[1:]))}
+    nx.draw(G, pos=nodo_pos, with_labels=True, node_size=700, node_color='skyblue')
     nx.draw_networkx_edges(G, pos=nodo_pos, edgelist=arista_color.keys(), edge_color='red', width=5)
     plt.show()
 
