@@ -51,19 +51,12 @@ def remapea(grafo: nx.Graph):
         dictarista_recorrido[origen] = [tuple(k for k in r[2]) for r in listarecorridos]
     grafores = nx.Graph()
     grafores.add_weighted_edges_from(aristas)
-    print("HHHooolllaaa")
-    print(nx.to_dict_of_lists(grafores))
     return grafores, dictarista_recorrido
     
 
 def recorrido_minimo(grafo: nx.Graph, dicc: dict[str, list[tuple[str]]]):
     grafoaux = grafo.to_directed()
     return nx.approximation.traveling_salesman_problem(grafoaux, cycle=False)
-
-#def arbol_minimo(grafo: nx.Graph, dicc: dict[list[str, tuple[str, str, list[str]]]]):
-#    grafoaux = grafo.to_directed()
-#    a = nx.tournament.hamiltonian_path(grafoaux)
-#    print(a)
 
 def asocia(lista: list,dicc: dict[str, list[tuple[str]]]):
 
@@ -127,11 +120,13 @@ def main():
     destinos = {"C", "D", "E", "N", "R", "P"}
 
     #Test 1
+    print("Test 1")
     G2, diccrecorr = subgrafo(G, destinos)
+    print(nx.to_dict_of_lists(G2))
 
     #Test 2
     G3, diccrecorr2 = remapea(G2)
-    print("test2")
+    print("Test 2")
     print(nx.to_dict_of_lists(G3))
 
 
@@ -141,42 +136,45 @@ def main():
     print(recorrido)
 
     #Test 4
-    #Tengo que corregir para el caso de que haya aristas raras tras remapear
     print("Test 4")
     abc = asocia(recorrido, diccrecorr2)
-    print(abc)
-    print(asocia(abc, diccrecorr))
-
-    #Test5 steiner tree (por hacer)
-    print("Test 5")
-    print(nx.to_dict_of_lists(nx.approximation.steiner_tree(G, destinos)))
-    b = nx.minimum_spanning_tree(G3)
+    resultado = asocia(abc, diccrecorr)
+    print(resultado)
 
 
 
     #Grafo original
-    
     # Visualizar G, coloreando los nodos que también aparecen en G2 de manera diferente
-    pos = nx.spring_layout(G)  # Layout para posicionar los nodos
-    node_colors_G = ["yellow" if nodo in G2.nodes else "skyblue" for nodo in G.nodes]
-    nx.draw(G, pos, with_labels=True, node_size=700, node_color=node_colors_G, font_size=10, font_color="black", font_weight="bold")
+    nodo_pos = nx.spring_layout(G)  # Layout para posicionar los nodos
+    nodo_colores = ["yellow" if nodo in G2.nodes else "skyblue" for nodo in G.nodes]
+    nx.draw(G, pos=nodo_pos, with_labels=True, node_size=700, node_color=nodo_colores, font_size=10, font_color="black", font_weight="bold")
     labels_G = nx.get_edge_attributes(G, 'weight')
-    nx.draw_networkx_edge_labels(G, pos, edge_labels=labels_G)
+    nx.draw_networkx_edge_labels(G, pos=nodo_pos, edge_labels=labels_G)
     plt.show()
 
 
     #Grafo reducido 
-
-    pos2 = {r: pos[r] for r in pos if r in G2.nodes()}
-    nx.draw(G2, pos2, with_labels=True, node_size=700)
+    nx.draw(G2, pos=nodo_pos, with_labels=True, node_size=700)
     labels_G2 = nx.get_edge_attributes(G2, 'weight')
-    nx.draw_networkx_edge_labels(G2, pos2, edge_labels=labels_G2)
+    nx.draw_networkx_edge_labels(G2, pos=nodo_pos, edge_labels=labels_G2)
     plt.show()
 
     #Grafo reducido reorganizado
-    nx.draw(G3, pos2, with_labels=True, node_size=700)
+    nx.draw(G3, pos=nodo_pos, with_labels=True, node_size=700)
     labels_G3 = nx.get_edge_attributes(G3, 'weight')
-    nx.draw_networkx_edge_labels(G3, pos2, edge_labels=labels_G3)
+    nx.draw_networkx_edge_labels(G3, pos=nodo_pos, edge_labels=labels_G3)
+    plt.show()
+
+    #Camino sobre el grafo reducido
+    arista_color = {edge: {'color': 'red'} for _, edge in enumerate(zip(abc, abc[1:]))}
+    nx.draw(G3, pos=nodo_pos, with_labels=True, font_weight='bold', node_size=700, node_color='skyblue')
+    nx.draw_networkx_edges(G3, pos=nodo_pos, edgelist=arista_color.keys(), edge_color='red', width=5)
+    plt.show()
+    
+    #Camino sobre el grafo original
+    arista_color = {edge: {'color': 'red'} for _, edge in enumerate(zip(resultado, resultado[1:]))}
+    nx.draw(G, pos=nodo_pos, with_labels=True, font_weight='bold', node_size=700, node_color='skyblue')
+    nx.draw_networkx_edges(G, pos=nodo_pos, edgelist=arista_color.keys(), edge_color='red', width=5)
     plt.show()
 
 
