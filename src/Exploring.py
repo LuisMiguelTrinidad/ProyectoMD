@@ -81,7 +81,19 @@ def main():
     print(d)
     
     posiciones = {nodo: (g.nodes[nodo]['x'], g.nodes[nodo]['y']) for nodo in g.nodes}
-    nx.draw(g, pos=posiciones, labels=nx.get_node_attributes(g, "Label"), font_size=8, )
+
+    gradiente_coloresdict = dict()
+    gradiente_coloreslist = list()
+    maximo = max([d[an] for an in d])
+    print(maximo)
+    minimo = min([d[an] for an in d])
+    print(minimo)
+    for r in d:
+        gradiente_coloresdict[r] = ((1 - d[r]/maximo), (d[r]/maximo)**2, 0.)
+    for r in sorted(gradiente_coloresdict.items(), key=lambda a:a[0]):
+        gradiente_coloreslist.append(r[1])
+    colores = gradiente_coloreslist.copy()
+    nx.draw(g, pos=posiciones, labels=nx.get_node_attributes(g, "Label"), font_size=8, node_color=colores)
     plt.show()
 
 
