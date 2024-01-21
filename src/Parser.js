@@ -1,3 +1,4 @@
+//Función parseadora
 const { Jomini } = require("jomini");
 const fs = require("fs");
 

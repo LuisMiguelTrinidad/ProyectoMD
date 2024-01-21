@@ -1,3 +1,4 @@
+#Función auxiliar, para parsear la partida a JSON, antes de ningun ejercicio
 import subprocess
 import Reader
 

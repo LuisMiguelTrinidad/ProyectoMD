@@ -1,3 +1,4 @@
+#Funcion visualizacion, ejercicio 1
 import networkx as nx
 import netwulf as nw
 import matplotlib.pyplot as plt

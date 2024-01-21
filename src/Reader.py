@@ -1,3 +1,4 @@
+#Función lectura, antes de ningun ejercicio
 import json
 
 def lectura(ruta_archivo: str):

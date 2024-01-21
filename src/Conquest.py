@@ -1,4 +1,4 @@
-#Hay que hacer dijkstra y despues tsp sobre el subgrafo resultante
+#Ejercicio 5
 import networkx as nx
 from matplotlib import pyplot as plt;
 
