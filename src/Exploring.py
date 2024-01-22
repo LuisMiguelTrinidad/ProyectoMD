@@ -28,14 +28,8 @@ def topedist(grafo: nx.Graph, numParticipantes: int):
     lis = [w[2]["weight"] for w in grafo.edges(data=True)]
     avglongitud = sum(lis)/len(lis)
     pesototal = 1.2 *sum([w[2]["weight"] for w in grafo.edges(data=True)])
-    #print("peso medio por arista: " + str(pesomedio))
     pesoporpart = pesototal/numParticipantes
-    #print("peso correspondiente por participante (mas 20%): " + str(pesoporpart))
-    #print("grado medio: " + str((g.number_of_edges()*2)/g.number_of_nodes()))
     saltos = math.log(pesoporpart, ((grafo.number_of_edges()*2)/grafo.number_of_nodes()-1))
-    #print("podemos apostar con cierto margen de seguridad aristas a este numero de saltos " + str(saltos))
-    #Colorear el mapa por distancia a nodos origen (si estan a max) distancia*pesomedio 
-    #print("podemos apostar con cierto margen de seguridad aristas a esta distancia " + str(saltos*pesomedio))
     return saltos*avglongitud
 
 def rankea(grafo: nx.Graph, dicc_corte: dict, numpart: int):
@@ -44,11 +38,17 @@ def rankea(grafo: nx.Graph, dicc_corte: dict, numpart: int):
     for i in grafo.nodes():
         punt=0
         for j in dicc_corte:
-            dist = nx.shortest_path_length(grafo, i, j)
+            dist = nx.shortest_path_length(grafo, i, j, weight="weight")
             if dist<toped:
-                punt+=len(dicc_corte[j])*dist/toped
+                punt+=(len(dicc_corte[j])*(toped-dist)/toped)
+            if i==66:
+                print(i, j, nx.shortest_path_length(grafo, i, j, weight="weight"))
+                print(punt)
+
         ranking[i] = punt
     return ranking
+
+
 
 def main():
     dicc_completo = Reader.lectura("./output/output0.json")
@@ -61,9 +61,8 @@ def main():
     print("test 1")
     print("")
     a = puntos_de_corte_y_aislamiento(g)
-
-    for r in a:
-        print(str(r) +  ":" + ((3-len(str(r)))*" ") +str(a[r]))
+    #for r in a:
+    #    print(str(r) +  ":" + ((3-len(str(r)))*" ") +str(a[r]))
 
     b = elimina_redundancias(a)
     print("")
@@ -72,30 +71,33 @@ def main():
     for r in b:
         print(str(r) + ": " + ((3-len(str(r)))*" ") + str(b[r]))
 
+    print("")
     print("test 3")
+    print("")
     c = topedist(g, 10)
     print(c)
 
     print("test 4")
-    d = rankea(g, a, 10)
-    print(d)
+    d = rankea(g, b, 10)
+    #for r in d:
+    #    print(str(r) + ": " + ((3-len(str(r)))*" ") + str(d[r]))
     
     posiciones = {nodo: (g.nodes[nodo]['x'], g.nodes[nodo]['y']) for nodo in g.nodes}
-
-    gradiente_coloresdict = dict()
-    gradiente_coloreslist = list()
+    colores = list()
     maximo = max([d[an] for an in d])
-    print(maximo)
-    minimo = min([d[an] for an in d])
-    print(minimo)
-    for r in d:
-        gradiente_coloresdict[r] = ((1 - d[r]/maximo), (d[r]/maximo)**2, 0.)
-    for r in sorted(gradiente_coloresdict.items(), key=lambda a:a[0]):
-        gradiente_coloreslist.append(r[1])
-    colores = gradiente_coloreslist.copy()
-    nx.draw(g, pos=posiciones, labels=nx.get_node_attributes(g, "Label"), font_size=8, node_color=colores)
+    colores = [(2 * (1 - (d[r] / maximo)), 1, 0.15) if d[r]/maximo > 0.5 else (1, 2 * (d[r] / maximo), 0.15) for r in d]
+    nx.draw(g,with_labels=True, pos=posiciones, font_size=8, node_color=colores, node_size=[15*(10+r[1]) for r in d.items()])
     plt.show()
 
+    print("Imprimiento los diez mejores sistemas")
+    for r in range(10):
+        print([sorted(list(d.items()),key=lambda a:a[1], reverse=True)[r][0],
+            10 * sorted(list(d.items()),key=lambda a:a[1], reverse=True)[r][1]/maximo])
+
+    print("Imprimiento los diez peores sistemas")
+    for r in range(10):
+        print([sorted(list(d.items()),key=lambda a:a[1])[r][0],
+            10 * sorted(list(d.items()),key=lambda a:a[1])[r][1]/maximo])
 
 if __name__ == "__main__":
     main()
