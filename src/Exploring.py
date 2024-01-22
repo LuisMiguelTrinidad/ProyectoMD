@@ -41,10 +41,6 @@ def rankea(grafo: nx.Graph, dicc_corte: dict, numpart: int):
             dist = nx.shortest_path_length(grafo, i, j, weight="weight")
             if dist<toped:
                 punt+=(len(dicc_corte[j])*(toped-dist)/toped)
-            if i==66:
-                print(i, j, nx.shortest_path_length(grafo, i, j, weight="weight"))
-                print(punt)
-
         ranking[i] = punt
     return ranking
 
@@ -82,22 +78,22 @@ def main():
     #for r in d:
     #    print(str(r) + ": " + ((3-len(str(r)))*" ") + str(d[r]))
     
-    posiciones = {nodo: (g.nodes[nodo]['x'], g.nodes[nodo]['y']) for nodo in g.nodes}
-    colores = list()
     maximo = max([d[an] for an in d])
-    colores = [(2 * (1 - (d[r] / maximo)), 1, 0.15) if d[r]/maximo > 0.5 else (1, 2 * (d[r] / maximo), 0.15) for r in d]
-    nx.draw(g,with_labels=True, pos=posiciones, font_size=8, node_color=colores, node_size=[15*(10+r[1]) for r in d.items()])
+    
+    nodo_posiciones = {nodo: (g.nodes[nodo]['x'], g.nodes[nodo]['y']) for nodo in g.nodes}
+    nodo_colores = [(2 * (1 - (d[r] / maximo)), 1, 0.15) if d[r]/maximo > 0.5 else (1, 2 * (d[r] / maximo), 0.15) for r in d]
+    nodo_tamano = [18*(8+r[1]) for r in d.items()]
+    nx.draw(g,with_labels=True, pos=nodo_posiciones, font_size=8, node_color=nodo_colores, node_size=nodo_tamano)
     plt.show()
 
+    listaordenada = [(r[0], 10*r[1]/maximo) for r in sorted(d.items(),key=lambda a:a[1], reverse=True)]
     print("Imprimiento los diez mejores sistemas")
     for r in range(10):
-        print([sorted(list(d.items()),key=lambda a:a[1], reverse=True)[r][0],
-            10 * sorted(list(d.items()),key=lambda a:a[1], reverse=True)[r][1]/maximo])
+        print(listaordenada[r])
 
     print("Imprimiento los diez peores sistemas")
     for r in range(10):
-        print([sorted(list(d.items()),key=lambda a:a[1])[r][0],
-            10 * sorted(list(d.items()),key=lambda a:a[1])[r][1]/maximo])
+        print(listaordenada[-(r+1)])
 
 if __name__ == "__main__":
     main()
