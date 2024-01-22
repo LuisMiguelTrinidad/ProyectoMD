@@ -45,8 +45,10 @@ def remapea(grafo: nx.Graph):
     return grafores, dictarista_recorrido
     
 
-def recorrido_minimo(grafo: nx.Graph, dicc: dict[str, list[tuple[str]]]):
-    return nx.approximation.traveling_salesman_problem(grafo, cycle=False)
+def tsp(grafo: nx.Graph, dicc: dict[str, list[tuple[str]]]):
+    SA_tsp = nx.approximation.simulated_annealing_tsp
+    method = lambda G, wt: SA_tsp(G, "greedy", weight=wt, temp=500)
+    return nx.approximation.traveling_salesman_problem(grafo, cycle=False, method=method)
 
 def asocia(lista: list,dicc: dict[str, list[tuple[str]]]):
     recorrido = []
@@ -119,7 +121,7 @@ def main():
 
     #Test 3
     print("Test 3")
-    recorrido = recorrido_minimo(G3, dict_recorridos)
+    recorrido = tsp(G3, dict_recorridos)
     print(recorrido)
 
     #Test 4
